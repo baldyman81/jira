@@ -13,7 +13,22 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      curl -fsSL https://get.docker.com -o get-docker.sh
+      sh get-docker.sh
 
+- task: CmdLine@2
+  inputs:
+    script: 'docker pull atlassian/jira-software'
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      docker volume create --name jiraVolume
+      docker run -v jiraVolume:/var/atlassian/application-data/jira --name="jira" -d -p 8080:8080 atlassian/jira-software
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
